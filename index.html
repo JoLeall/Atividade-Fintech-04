@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOVI SmartCapture — Protótipo Interativo</title>
+    <!-- tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- estilos customizados -->
+    <link rel="stylesheet" href="style.css">
+    <!-- favicon simples -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
+</head>
+<body>
+
+<!-- CONTAINER PRINCIPAL - Split Screen -->
+<div class="layout-split">
+
+    <!-- ============================================
+         PAINEL ESQUERDO - Apresentação do módulo
+         ============================================ -->
+    <aside class="painel-esquerdo" id="painelEsquerdo">
+        <!-- Logo JOVI -->
+        <div>
+            <div class="logo-jovi">
+                <div class="logo-icone">📸</div>
+                <div class="logo-texto">
+                    <h1>JOVI</h1>
+                    <span>SmartCapture</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- conteudo dinamico que muda conforme o modulo -->
+        <div class="conteudo-modulo" id="conteudoModulo">
+            <!-- preenchido via JS -->
+        </div>
+
+        <!-- rodape -->
+        <div class="rodape-esquerdo">
+            <p>© 2026 JOVI SmartCapture<br>Projeto acadêmico — Design de Interface Inteligente<br>Todos os direitos reservados.</p>
+        </div>
+    </aside>
+
+    <!-- ============================================
+         PAINEL DIREITO - App Interativo
+         ============================================ -->
+    <main class="painel-direito">
+        <!-- barra de navegação superior -->
+        <nav class="nav-superior">
+            <div class="nav-tabs" id="navTabs">
+                <button class="nav-tab ativo" data-modulo="0" onclick="trocarModulo(0)">📷 Captura</button>
+                <button class="nav-tab" data-modulo="1" onclick="trocarModulo(1)">🖼️ Galeria</button>
+                <button class="nav-tab" data-modulo="2" onclick="trocarModulo(2)">✨ Editor</button>
+                <button class="nav-tab" data-modulo="3" onclick="trocarModulo(3)">🔗 Compartilhar</button>
+                <button class="nav-tab" data-modulo="4" onclick="trocarModulo(4)">📊 Analytics</button>
+            </div>
+            <div class="badge-ia">
+                <span class="dot-pulse"></span>
+                IA Ativa
+            </div>
+        </nav>
+
+        <!-- area de conteudo dos modulos -->
+        <div class="conteudo-app" id="conteudoApp">
+
+            <!-- =============================================
+                 MÓDULO 1 — CAPTURA INTELIGENTE
+                 ============================================= -->
+            <div class="modulo-conteudo visivel" id="modulo0">
+                <div class="captura-layout">
+                    <!-- visor da camera -->
+                    <div class="visor-camera" id="visorCamera">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80" alt="Cena capturada" id="imagemVisor">
+
+                        <!-- grade regra dos tercos -->
+                        <div class="grade-tercos" id="gradeTercos">
+                            <div class="linha-h"></div>
+                            <div class="linha-h"></div>
+                            <div class="linha-v"></div>
+                            <div class="linha-v"></div>
+                        </div>
+
+                        <!-- indicador de nivel -->
+                        <div class="indicador-nivel" id="indicadorNivel"></div>
+
+                        <!-- badges superiores -->
+                        <div class="visor-badges">
+                            <span class="badge-visor badge-raw">RAW</span>
+                            <span class="badge-visor badge-pro">Pro 200MP</span>
+                        </div>
+
+                        <!-- controles laterais -->
+                        <div class="controles-laterais">
+                            <button class="btn-lateral" onclick="acaoBtnLateral('Câmera invertida')" title="Inverter câmera">
+                                🔄<span>Inverter</span>
+                            </button>
+                            <button class="btn-lateral" id="btnFlash" onclick="toggleFlash()" title="Flash">
+                                ⚡<span>Flash</span>
+                            </button>
+                            <button class="btn-lateral ativo-btn" id="btnGrade" onclick="toggleGrade()" title="Grade">
+                                ▦<span>Grade</span>
+                            </button>
+                            <button class="btn-lateral" onclick="acaoBtnLateral('Timer: 3s')" title="Timer">
+                                ⏱️<span>Timer</span>
+                            </button>
+                            <button class="btn-lateral" onclick="acaoBtnLateral('Proporção: 4:3')" title="Proporção">
+                                ⬜<span>Proporção</span>
+                            </button>
+                            <button class="btn-lateral" onclick="acaoBtnLateral('Configurações abertas')" title="Config">
+                                ⚙️<span>Config</span>
+                            </button>
+                        </div>
+
+                        <!-- barra inferior -->
+                        <div class="barra-inferior-visor">
+                            <div class="controles-foto">
+                                <div class="info-tecnica">
+                                    <select id="seletorISO" onchange="mostrarToast('ISO alterado para ' + this.value, 'info')">
+                                        <option>ISO 100</option>
+                                        <option>ISO 200</option>
+                                        <option>ISO 400</option>
+                                        <option>ISO 800</option>
+                                        <option>ISO 1600</option>
+                                        <option>ISO 3200</option>
+                                    </select>
+                                    <select id="seletorWB" onchange="mostrarToast('Balanço de branco: ' + this.value, 'info')">
+                                        <option>WB Auto</option>
+                                        <option>WB Luz do dia</option>
+                                        <option>WB Nublado</option>
+                                        <option>WB Tungstênio</option>
+                                        <option>WB Fluorescente</option>
+                                    </select>
+                                    <div class="info-item">EV 0.0</div>
+                                    <div class="info-item">AF-C</div>
+                                    <div class="info-item" style="color: #10b981;">💾 78GB</div>
+                                </div>
+                            </div>
+                            <div class="area-obturador">
+                                <div class="toggle-modo">
+                                    <button class="modo-ativo" id="btnFoto" onclick="trocarModoCaptura('foto')">FOTO</button>
+                                    <button id="btnVideo" onclick="trocarModoCaptura('video')">VÍDEO</button>
+                                </div>
+                                <button class="btn-obturador" id="btnObturador" onclick="capturar()"></button>
+                                <div style="width: 80px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- painel assistente IA -->
+                    <div class="painel-assistente">
+                        <div class="assistente-header">
+                            <h3>🤖 Assistente IA</h3>
+                            <span style="font-size: 0.65rem; color: #10b981;">● Online</span>
+                        </div>
+
+                        <!-- cena detectada -->
+                        <div class="cena-detectada">
+                            <div class="label-cena">Cena detectada</div>
+                            <div class="valor-cena">🏔️ Paisagem Montanhosa</div>
+                        </div>
+
+                        <!-- indicadores de qualidade -->
+                        <div>
+                            <div style="font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 600;">Qualidade da Cena</div>
+                            <div class="indicadores-qualidade">
+                                <div class="indicador-item">
+                                    <span class="nome-ind">Luz</span>
+                                    <span class="valor-ind"><span class="dot-indicador dot-verde"></span> Ótima</span>
+                                </div>
+                                <div class="indicador-item">
+                                    <span class="nome-ind">Composição</span>
+                                    <span class="valor-ind"><span class="dot-indicador dot-verde"></span> Muito boa</span>
+                                </div>
+                                <div class="indicador-item">
+                                    <span class="nome-ind">Foco</span>
+                                    <span class="valor-ind"><span class="dot-indicador dot-azul"></span> Ideal</span>
+                                </div>
+                                <div class="indicador-item">
+                                    <span class="nome-ind">Cores</span>
+                                    <span class="valor-ind"><span class="dot-indicador dot-roxo"></span> Vibrantes</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- dica rapida -->
+                        <div class="dica-rapida">
+                            <div class="titulo-dica">💡 Dica Rápida</div>
+                            <p>Tente incluir um elemento em primeiro plano para adicionar profundidade à composição da paisagem.</p>
+                        </div>
+
+                        <!-- sugestoes de ajuste -->
+                        <div style="margin-top: auto;">
+                            <div style="font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 600;">Sugestões de Ajuste</div>
+                            <div style="display: flex; flex-direction: column; gap: 6px;">
+                                <button onclick="mostrarToast('ISO ajustado para 200 automaticamente', 'sucesso')" style="background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.15); color: #c4b5fd; padding: 8px 10px; border-radius: 8px; font-size: 0.72rem; cursor: pointer; text-align: left; font-family: 'Outfit', sans-serif; transition: all 0.2s;">
+                                    📐 Ativar HDR para realces
+                                </button>
+                                <button onclick="mostrarToast('Modo golden hour ativado', 'sucesso')" style="background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.15); color: #67e8f9; padding: 8px 10px; border-radius: 8px; font-size: 0.72rem; cursor: pointer; text-align: left; font-family: 'Outfit', sans-serif; transition: all 0.2s;">
+                                    🌅 Modo Golden Hour
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =============================================
+                 MÓDULO 2 — GALERIA INTELIGENTE
+                 ============================================= -->
+            <div class="modulo-conteudo" id="modulo1">
+                <div class="galeria-layout">
+                    <!-- sidebar navegação -->
+                    <nav class="sidebar-galeria">
+                        <div class="sidebar-titulo">Navegação</div>
+                        <div class="sidebar-nav">
+                            <button class="sidebar-item" onclick="trocarModulo(0)">
+                                <span class="sb-icon">📷</span> Captura
+                            </button>
+                            <button class="sidebar-item sb-ativo">
+                                <span class="sb-icon">🖼️</span> Galeria
+                                <span class="sidebar-badge-count">247</span>
+                            </button>
+                            <button class="sidebar-item" onclick="trocarModulo(2)">
+                                <span class="sb-icon">✨</span> Editor
+                            </button>
+                            <button class="sidebar-item" onclick="trocarModulo(3)">
+                                <span class="sb-icon">🔗</span> Compartilhar
+                            </button>
+                            <button class="sidebar-item" onclick="trocarModulo(4)">
+                                <span class="sb-icon">📊</span> Analytics
+                            </button>
+                            <div style="flex: 1;"></div>
+                            <button class="sidebar-item" onclick="mostrarToast('Configurações abertas', 'info')">
+                                <span class="sb-icon">⚙️</span> Configurações
+                            </button>
+                        </div>
+                    </nav>
+
+                    <!-- area principal -->
+                    <div class="galeria-principal">
+                        <!-- filtros -->
+                        <div class="filtros-galeria">
+                            <button class="filtro-btn filtro-ativo" onclick="filtrarGaleria(this, 'todos')">Todos</button>
+                            <button class="filtro-btn" onclick="filtrarGaleria(this, 'fotos')">📷 Fotos</button>
+                            <button class="filtro-btn" onclick="filtrarGaleria(this, 'videos')">🎬 Vídeos</button>
+                            <button class="filtro-btn" onclick="filtrarGaleria(this, 'locais')">📍 Todos os locais</button>
+                            <button class="filtro-btn" onclick="filtrarGaleria(this, 'recentes')">🕐 Mais recentes</button>
+                        </div>
+
+                        <!-- grid de fotos -->
+                        <div class="grid-fotos" id="gridFotos">
+                            <div class="foto-item" data-tipo="fotos" onclick="abrirFotoGaleria(this)">
+                                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=75" alt="Montanha" loading="lazy">
+                            </div>
+                            <div class="foto-item" data-tipo="fotos" onclick="abrirFotoGaleria(this)">
+                                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&q=75" alt="Noite estrelada" loading="lazy">
+                            </div>
+                            <div class="foto-item" data-tipo="fotos" onclick="abrirFotoGaleria(this)">
+                                <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=400&q=75" alt="Natureza" loading="lazy">
+                            </div>
+                            <div class="foto-item" data-tipo="videos" onclick="abrirFotoGaleria(this)">
+                                <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&q=75" alt="Lago" loading="lazy">
+                            </div>
+                            <div class="foto-item" data-tipo="fotos" onclick="abrirFotoGaleria(this)">
+                                <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&q=75" alt="Floresta" loading="lazy">
+                            </div>
+                            <div class="foto-item" data-tipo="fotos" onclick="abrirFotoGaleria(this)">
+                                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=75" alt="Árvores" loading="lazy">
+                            </div>
+                            <div class="foto-item" data-tipo="videos" onclick="abrirFotoGaleria(this)">
+                                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=75" alt="Praia" loading="lazy">
+                            </div>
+                            <div class="foto-item" data-tipo="fotos" onclick="abrirFotoGaleria(this)">
+                                <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&q=75" alt="Sol" loading="lazy">
+                            </div>
+                            <div class="foto-item" data-tipo="fotos" onclick="abrirFotoGaleria(this)">
+                                <img src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=400&q=75" alt="Cachoeira" loading="lazy">
+                            </div>
+                            <div class="foto-item" data-tipo="fotos" onclick="abrirFotoGaleria(this)">
+                                <img src="https://images.unsplash.com/photo-1465056836900-8f1e940f3404?w=400&q=75" alt="Retrato" loading="lazy">
+                            </div>
+                            <div class="foto-item" data-tipo="videos" onclick="abrirFotoGaleria(this)">
+                                <img src="https://images.unsplash.com/photo-1504198453319-5ce911bafcde?w=400&q=75" alt="Cidade" loading="lazy">
+                            </div>
+                            <div class="foto-item" data-tipo="fotos" onclick="abrirFotoGaleria(this)">
+                                <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=400&q=75" alt="Campo" loading="lazy">
+                            </div>
+                        </div>
+
+                        <!-- tags -->
+                        <div style="margin-bottom: 6px; font-size: 0.7rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Tags populares</div>
+                        <div class="secao-tags">
+                            <span class="tag-item" onclick="mostrarToast('Filtrado por: Paisagem', 'info')">#paisagem</span>
+                            <span class="tag-item" onclick="mostrarToast('Filtrado por: Natureza', 'info')">#natureza</span>
+                            <span class="tag-item" onclick="mostrarToast('Filtrado por: Retrato', 'info')">#retrato</span>
+                            <span class="tag-item" onclick="mostrarToast('Filtrado por: Noturna', 'info')">#noturna</span>
+                            <span class="tag-item" onclick="mostrarToast('Filtrado por: Golden Hour', 'info')">#goldenhour</span>
+                            <span class="tag-item" onclick="mostrarToast('Filtrado por: Urbano', 'info')">#urbano</span>
+                            <span class="tag-item" onclick="mostrarToast('Filtrado por: Macro', 'info')">#macro</span>
+                        </div>
+
+                        <!-- indicador de performance -->
+                        <div class="perf-indicator">
+                            <span class="perf-icon">⚡</span>
+                            Carregamento 80% mais rápido com cache inteligente
+                        </div>
+                    </div>
+                </div>
+
+                <!-- painel flutuante de sugestões -->
+                <div class="painel-sugestoes sugestoes-visivel" id="painelSugestoes">
+                    <div class="sugestoes-header">
+                        <h4>✨ Sugestões Inteligentes</h4>
+                        <button class="btn-fechar-sugestoes" onclick="fecharSugestoes()">✕</button>
+                    </div>
+                    <div class="sugestao-item" onclick="mostrarToast('Álbum criado: Paisagens 2026', 'sucesso')">
+                        <div class="sug-icon" style="background: rgba(139,92,246,0.12); color: #8b5cf6;">📁</div>
+                        <div class="sug-texto">
+                            <strong>Criar álbum automático</strong>
+                            8 fotos de paisagem podem ser agrupadas
+                        </div>
+                    </div>
+                    <div class="sugestao-item" onclick="mostrarToast('3 fotos duplicadas encontradas', 'info')">
+                        <div class="sug-icon" style="background: rgba(6,182,212,0.12); color: #06b6d4;">🔍</div>
+                        <div class="sug-texto">
+                            <strong>Remover duplicatas</strong>
+                            3 fotos similares detectadas
+                        </div>
+                    </div>
+                    <div class="sugestao-item" onclick="mostrarToast('Melhorias aplicadas em 5 fotos', 'sucesso')">
+                        <div class="sug-icon" style="background: rgba(16,185,129,0.12); color: #10b981;">🎨</div>
+                        <div class="sug-texto">
+                            <strong>Melhorar automaticamente</strong>
+                            5 fotos podem ser otimizadas pela IA
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =============================================
+                 MÓDULO 3 — EDITOR ASSISTIDO
+                 ============================================= -->
+            <div class="modulo-conteudo" id="modulo2">
+                <div class="editor-layout">
+                    <!-- toolbar lateral -->
+                    <div class="editor-toolbar">
+                        <button class="tool-btn tool-ativo" onclick="selecionarFerramenta(this)" title="Ajustes">
+                            🎛️<span>Ajustes</span>
+                        </button>
+                        <button class="tool-btn" onclick="selecionarFerramenta(this)" title="Recortar">
+                            ✂️<span>Recortar</span>
+                        </button>
+                        <button class="tool-btn" onclick="selecionarFerramenta(this)" title="Filtros">
+                            🎭<span>Filtros</span>
+                        </button>
+                        <button class="tool-btn" onclick="selecionarFerramenta(this)" title="Curvas">
+                            📈<span>Curvas</span>
+                        </button>
+                        <button class="tool-btn" onclick="selecionarFerramenta(this)" title="Detalhes">
+                            🔎<span>Detalhes</span>
+                        </button>
+                        <button class="tool-btn" onclick="selecionarFerramenta(this)" title="HSL">
+                            🌈<span>HSL</span>
+                        </button>
+                        <button class="tool-btn" onclick="selecionarFerramenta(this)" title="Vinheta">
+                            ⭕<span>Vinheta</span>
+                        </button>
+                        <button class="tool-btn" onclick="selecionarFerramenta(this)" title="Granulação">
+                            ✳️<span>Granulação</span>
+                        </button>
+                    </div>
+
+                    <!-- area de preview -->
+                    <div class="editor-preview-area">
+                        <div class="editor-header">
+                            <span class="nome-arquivo">📄 IMG_20260619_sunset.raw</span>
+                            <div class="editor-acoes">
+                                <button class="btn-editor btn-redefinir" onclick="redefinirEditor()">↺ Redefinir</button>
+                                <button class="btn-editor btn-salvar" onclick="salvarEdicao()">💾 Salvar</button>
+                            </div>
+                        </div>
+                        <div class="editor-imagem-container">
+                            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="Imagem editavel" id="imagemEditor">
+                        </div>
+                        <div class="zoom-controles">
+                            <button onclick="alterarZoom(-10)">−</button>
+                            <span class="zoom-valor" id="zoomValor">100%</span>
+                            <button onclick="alterarZoom(10)">+</button>
+                            <button onclick="alterarZoom(0)" style="margin-left: 4px; font-size: 11px;">↻ Ajustar</button>
+                        </div>
+                    </div>
+
+                    <!-- painel de ajustes -->
+                    <div class="editor-ajustes" id="painelAjustes">
+                        <div class="ajuste-secao-titulo">Ajustes de Luz</div>
+
+                        <div class="ajuste-item">
+                            <label>Exposição <span class="valor-ajuste" id="valExposicao">0</span></label>
+                            <input type="range" class="slider-ajuste" min="-100" max="100" value="0" data-filtro="exposicao" oninput="atualizarFiltro(this)">
+                        </div>
+                        <div class="ajuste-item">
+                            <label>Contraste <span class="valor-ajuste" id="valContraste">0</span></label>
+                            <input type="range" class="slider-ajuste" min="-100" max="100" value="0" data-filtro="contraste" oninput="atualizarFiltro(this)">
+                        </div>
+                        <div class="ajuste-item">
+                            <label>Realces <span class="valor-ajuste" id="valRealces">0</span></label>
+                            <input type="range" class="slider-ajuste" min="-100" max="100" value="0" data-filtro="realces" oninput="atualizarFiltro(this)">
+                        </div>
+                        <div class="ajuste-item">
+                            <label>Sombras <span class="valor-ajuste" id="valSombras">0</span></label>
+                            <input type="range" class="slider-ajuste" min="-100" max="100" value="0" data-filtro="sombras" oninput="atualizarFiltro(this)">
+                        </div>
+                        <div class="ajuste-item">
+                            <label>Brancos <span class="valor-ajuste" id="valBrancos">0</span></label>
+                            <input type="range" class="slider-ajuste" min="-100" max="100" value="0" data-filtro="brancos" oninput="atualizarFiltro(this)">
+                        </div>
+                        <div class="ajuste-item">
+                            <label>Pretos <span class="valor-ajuste" id="valPretos">0</span></label>
+                            <input type="range" class="slider-ajuste" min="-100" max="100" value="0" data-filtro="pretos" oninput="atualizarFiltro(this)">
+                        </div>
+
+                        <div class="ajuste-secao-titulo" style="margin-top: 8px;">Cor</div>
+
+                        <div class="ajuste-item">
+                            <label>Saturação <span class="valor-ajuste" id="valSaturacao">0</span></label>
+                            <input type="range" class="slider-ajuste" min="-100" max="100" value="0" data-filtro="saturacao" oninput="atualizarFiltro(this)">
+                        </div>
+                        <div class="ajuste-item">
+                            <label>Vibração <span class="valor-ajuste" id="valVibracao">0</span></label>
+                            <input type="range" class="slider-ajuste" min="-100" max="100" value="0" data-filtro="vibracao" oninput="atualizarFiltro(this)">
+                        </div>
+                        <div class="ajuste-item">
+                            <label>Temp. de Cor <span class="valor-ajuste" id="valTemperatura">0</span></label>
+                            <input type="range" class="slider-ajuste" min="-100" max="100" value="0" data-filtro="temperatura" oninput="atualizarFiltro(this)">
+                        </div>
+
+                        <!-- curva de tons -->
+                        <div class="ajuste-secao-titulo" style="margin-top: 8px;">Curva de Tons</div>
+                        <div class="curva-container">
+                            <svg viewBox="0 0 260 120" id="curvaTons">
+                                <!-- grid de fundo -->
+                                <line x1="0" y1="30" x2="260" y2="30" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                                <line x1="0" y1="60" x2="260" y2="60" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                                <line x1="0" y1="90" x2="260" y2="90" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                                <line x1="65" y1="0" x2="65" y2="120" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                                <line x1="130" y1="0" x2="130" y2="120" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                                <line x1="195" y1="0" x2="195" y2="120" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                                <!-- diagonal base -->
+                                <line x1="0" y1="120" x2="260" y2="0" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4,4"/>
+                                <!-- curva principal -->
+                                <path id="curvaPath" d="M0,120 C65,110 130,60 195,20 Q230,5 260,0" fill="none" stroke="#8b5cf6" stroke-width="2"/>
+                                <!-- pontos de controle -->
+                                <circle cx="65" cy="95" r="4" fill="#8b5cf6" stroke="white" stroke-width="1.5" style="cursor: pointer;"/>
+                                <circle cx="130" cy="55" r="4" fill="#8b5cf6" stroke="white" stroke-width="1.5" style="cursor: pointer;"/>
+                                <circle cx="195" cy="20" r="4" fill="#8b5cf6" stroke="white" stroke-width="1.5" style="cursor: pointer;"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =============================================
+                 MÓDULO 4 — COMPARTILHAMENTO OTIMIZADO
+                 ============================================= -->
+            <div class="modulo-conteudo" id="modulo3">
+                <div class="compartilhar-layout">
+                    <!-- Seção 1: Selecionar -->
+                    <div class="compartilhar-secao">
+                        <h3><span class="passo-num">1</span> Selecionar conteúdos</h3>
+                        <div class="selecao-grid" id="selecaoGrid">
+                            <div class="selecao-item selecionado" onclick="toggleSelecao(this)">
+                                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&q=75" alt="Foto 1">
+                                <div class="check-overlay">✓</div>
+                            </div>
+                            <div class="selecao-item selecionado" onclick="toggleSelecao(this)">
+                                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&q=75" alt="Foto 2">
+                                <div class="check-overlay">✓</div>
+                            </div>
+                            <div class="selecao-item" onclick="toggleSelecao(this)">
+                                <img src="https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=300&q=75" alt="Foto 3">
+                                <div class="check-overlay">✓</div>
+                            </div>
+                            <div class="selecao-item selecionado" onclick="toggleSelecao(this)">
+                                <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=300&q=75" alt="Foto 4">
+                                <div class="check-overlay">✓</div>
+                            </div>
+                            <div class="selecao-item" onclick="toggleSelecao(this)">
+                                <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&q=75" alt="Foto 5">
+                                <div class="check-overlay">✓</div>
+                            </div>
+                            <div class="selecao-item" onclick="toggleSelecao(this)">
+                                <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300&q=75" alt="Foto 6">
+                                <div class="check-overlay">✓</div>
+                            </div>
+                            <div class="selecao-item" onclick="toggleSelecao(this)">
+                                <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&q=75" alt="Foto 7">
+                                <div class="check-overlay">✓</div>
+                            </div>
+                            <div class="selecao-item" onclick="toggleSelecao(this)">
+                                <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=300&q=75" alt="Foto 8">
+                                <div class="check-overlay">✓</div>
+                            </div>
+                            <div class="selecao-item" onclick="toggleSelecao(this)">
+                                <img src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=300&q=75" alt="Foto 9">
+                                <div class="check-overlay">✓</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 8px; font-size: 0.72rem; color: #64748b;">
+                            <span id="contadorSelecionados">3</span> de 9 selecionados
+                        </div>
+                    </div>
+
+                    <!-- Seção 2: Pré-visualização -->
+                    <div class="compartilhar-secao">
+                        <h3><span class="passo-num">2</span> Pré-visualização</h3>
+                        <div class="preview-carousel">
+                            <div class="carousel-imagem">
+                                <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="Preview" id="carouselImg">
+                            </div>
+                            <div class="carousel-nav-dots" id="carouselDots">
+                                <button class="carousel-dot dot-ativo" onclick="navegarCarousel(0)"></button>
+                                <button class="carousel-dot" onclick="navegarCarousel(1)"></button>
+                                <button class="carousel-dot" onclick="navegarCarousel(2)"></button>
+                            </div>
+                        </div>
+                        <!-- detalhes -->
+                        <div class="detalhes-comp">
+                            <div class="detalhe-row">
+                                <span class="detalhe-label">Qualidade</span>
+                                <span class="detalhe-valor">Máxima (4K)</span>
+                            </div>
+                            <div class="detalhe-row">
+                                <span class="detalhe-label">Formato</span>
+                                <span class="detalhe-valor">JPEG + RAW</span>
+                            </div>
+                            <div class="detalhe-row">
+                                <span class="detalhe-label">Tamanho total</span>
+                                <span class="detalhe-valor">42.8 MB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção 3: Destino -->
+                    <div class="compartilhar-secao">
+                        <h3><span class="passo-num">3</span> Escolher destino</h3>
+
+                        <!-- grid de plataformas -->
+                        <div class="destinos-grid" id="destinosGrid">
+                            <div class="destino-item dest-selecionado" onclick="toggleDestino(this)">
+                                <span class="dest-icon">📸</span> Instagram
+                            </div>
+                            <div class="destino-item" onclick="toggleDestino(this)">
+                                <span class="dest-icon">👤</span> Facebook
+                            </div>
+                            <div class="destino-item" onclick="toggleDestino(this)">
+                                <span class="dest-icon">🎵</span> TikTok
+                            </div>
+                            <div class="destino-item" onclick="toggleDestino(this)">
+                                <span class="dest-icon">▶️</span> YouTube
+                            </div>
+                            <div class="destino-item dest-selecionado" onclick="toggleDestino(this)">
+                                <span class="dest-icon">✖️</span> X/Twitter
+                            </div>
+                            <div class="destino-item" onclick="toggleDestino(this)">
+                                <span class="dest-icon">💬</span> WhatsApp
+                            </div>
+                            <div class="destino-item" onclick="toggleDestino(this)">
+                                <span class="dest-icon">📌</span> Pinterest
+                            </div>
+                            <div class="destino-item" onclick="toggleDestino(this)">
+                                <span class="dest-icon">📧</span> E-mail
+                            </div>
+                            <div class="destino-item" onclick="toggleDestino(this)">
+                                <span class="dest-icon">➕</span> Mais
+                            </div>
+                        </div>
+
+                        <!-- toggles -->
+                        <div class="toggle-container">
+                            <div class="toggle-row">
+                                <span>📍 Incluir localização</span>
+                                <button class="toggle-switch toggle-on" onclick="toggleSwitch(this)"></button>
+                            </div>
+                            <div class="toggle-row">
+                                <span>💬 Permitir comentários</span>
+                                <button class="toggle-switch toggle-on" onclick="toggleSwitch(this)"></button>
+                            </div>
+                            <div class="toggle-row">
+                                <span>©️ Adicionar marca d'água</span>
+                                <button class="toggle-switch" onclick="toggleSwitch(this)"></button>
+                            </div>
+                        </div>
+
+                        <!-- botoes -->
+                        <button class="btn-compartilhar" onclick="iniciarCompartilhamento()">
+                            🚀 Compartilhar agora
+                        </button>
+                        <button class="btn-gerar-link" onclick="gerarLink()">
+                            🔗 Gerar link
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- =============================================
+                 MÓDULO 5 — ANALYTICS COM INSIGHTS DE IA
+                 ============================================= -->
+            <div class="modulo-conteudo" id="modulo4">
+                <div class="analytics-layout">
+                    <!-- area principal -->
+                    <div class="analytics-principal">
+                        <!-- cards metricas -->
+                        <div class="metricas-grid">
+                            <div class="metrica-card">
+                                <div class="metrica-icon">👁️</div>
+                                <div class="metrica-valor">24.8K</div>
+                                <div class="metrica-label">Views</div>
+                                <div class="metrica-variacao variacao-positiva">↑ +12.5%</div>
+                            </div>
+                            <div class="metrica-card">
+                                <div class="metrica-icon">❤️</div>
+                                <div class="metrica-valor">3.2K</div>
+                                <div class="metrica-label">Likes</div>
+                                <div class="metrica-variacao variacao-positiva">↑ +8.3%</div>
+                            </div>
+                            <div class="metrica-card">
+                                <div class="metrica-icon">🔄</div>
+                                <div class="metrica-valor">891</div>
+                                <div class="metrica-label">Shares</div>
+                                <div class="metrica-variacao variacao-positiva">↑ +23.1%</div>
+                            </div>
+                            <div class="metrica-card">
+                                <div class="metrica-icon">🖱️</div>
+                                <div class="metrica-valor">1.5K</div>
+                                <div class="metrica-label">Clicks</div>
+                                <div class="metrica-variacao variacao-negativa">↓ -2.4%</div>
+                            </div>
+                        </div>
+
+                        <!-- grafico de barras -->
+                        <div class="grafico-container">
+                            <div class="grafico-header">
+                                <h3>📊 Performance Semanal</h3>
+                                <div class="grafico-periodo">
+                                    <button onclick="trocarPeriodo(this)" class="periodo-ativo">7D</button>
+                                    <button onclick="trocarPeriodo(this)">30D</button>
+                                    <button onclick="trocarPeriodo(this)">90D</button>
+                                </div>
+                            </div>
+                            <div class="barras-chart" id="barrasChart">
+                                <div class="barra-item">
+                                    <div class="barra-fill" style="height: 45%;">
+                                        <span class="barra-tooltip">2.1K views</span>
+                                    </div>
+                                    <span class="barra-label">Seg</span>
+                                </div>
+                                <div class="barra-item">
+                                    <div class="barra-fill" style="height: 68%;">
+                                        <span class="barra-tooltip">3.4K views</span>
+                                    </div>
+                                    <span class="barra-label">Ter</span>
+                                </div>
+                                <div class="barra-item">
+                                    <div class="barra-fill" style="height: 52%;">
+                                        <span class="barra-tooltip">2.6K views</span>
+                                    </div>
+                                    <span class="barra-label">Qua</span>
+                                </div>
+                                <div class="barra-item">
+                                    <div class="barra-fill" style="height: 85%;">
+                                        <span class="barra-tooltip">4.8K views</span>
+                                    </div>
+                                    <span class="barra-label">Qui</span>
+                                </div>
+                                <div class="barra-item">
+                                    <div class="barra-fill" style="height: 92%;">
+                                        <span class="barra-tooltip">5.2K views</span>
+                                    </div>
+                                    <span class="barra-label">Sex</span>
+                                </div>
+                                <div class="barra-item">
+                                    <div class="barra-fill" style="height: 78%;">
+                                        <span class="barra-tooltip">3.9K views</span>
+                                    </div>
+                                    <span class="barra-label">Sáb</span>
+                                </div>
+                                <div class="barra-item">
+                                    <div class="barra-fill" style="height: 60%;">
+                                        <span class="barra-tooltip">2.8K views</span>
+                                    </div>
+                                    <span class="barra-label">Dom</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- engajamento por tipo de conteudo -->
+                        <div class="grafico-container">
+                            <div class="grafico-header">
+                                <h3>🎯 Engajamento por Tipo</h3>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                                <div style="background: rgba(139,92,246,0.06); border-radius: 10px; padding: 14px; text-align: center;">
+                                    <div style="font-size: 1.2rem; font-weight: 700; color: #8b5cf6;">68%</div>
+                                    <div style="font-size: 0.7rem; color: #64748b; margin-top: 4px;">Paisagens</div>
+                                    <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.06); border-radius: 4px; margin-top: 8px;">
+                                        <div style="width: 68%; height: 100%; background: #8b5cf6; border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                                <div style="background: rgba(6,182,212,0.06); border-radius: 10px; padding: 14px; text-align: center;">
+                                    <div style="font-size: 1.2rem; font-weight: 700; color: #06b6d4;">52%</div>
+                                    <div style="font-size: 0.7rem; color: #64748b; margin-top: 4px;">Retratos</div>
+                                    <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.06); border-radius: 4px; margin-top: 8px;">
+                                        <div style="width: 52%; height: 100%; background: #06b6d4; border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                                <div style="background: rgba(16,185,129,0.06); border-radius: 10px; padding: 14px; text-align: center;">
+                                    <div style="font-size: 1.2rem; font-weight: 700; color: #10b981;">45%</div>
+                                    <div style="font-size: 0.7rem; color: #64748b; margin-top: 4px;">Noturnas</div>
+                                    <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.06); border-radius: 4px; margin-top: 8px;">
+                                        <div style="width: 45%; height: 100%; background: #10b981; border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- painel de insights IA -->
+                    <div class="painel-insights">
+                        <!-- recomendacoes -->
+                        <div class="insight-card">
+                            <h4>🧠 Insights da IA</h4>
+                            <div class="insight-item">
+                                <span class="ins-dot" style="background: #10b981;"></span>
+                                <span>Fotos de paisagem no formato <strong style="color: #e2e8f0;">16:9</strong> geram 3x mais engajamento no seu perfil.</span>
+                            </div>
+                            <div class="insight-item">
+                                <span class="ins-dot" style="background: #8b5cf6;"></span>
+                                <span>Usar filtros com tons quentes aumentou seus <strong style="color: #e2e8f0;">likes em 28%</strong> nas últimas 2 semanas.</span>
+                            </div>
+                            <div class="insight-item">
+                                <span class="ins-dot" style="background: #06b6d4;"></span>
+                                <span>Conteúdo postado às <strong style="color: #e2e8f0;">19h-21h</strong> tem o melhor desempenho para seu público.</span>
+                            </div>
+                            <div class="insight-item">
+                                <span class="ins-dot" style="background: #f59e0b;"></span>
+                                <span>Carrosséis com 5+ imagens retêm <strong style="color: #e2e8f0;">40% mais</strong> a atenção dos seguidores.</span>
+                            </div>
+                        </div>
+
+                        <!-- melhores horarios -->
+                        <div class="insight-card">
+                            <h4>⏰ Melhores Horários</h4>
+                            <div class="horarios-grid">
+                                <div class="horario-item">
+                                    <div class="dia">Segunda</div>
+                                    <div class="hora">19:30</div>
+                                </div>
+                                <div class="horario-item">
+                                    <div class="dia">Terça</div>
+                                    <div class="hora">20:00</div>
+                                </div>
+                                <div class="horario-item">
+                                    <div class="dia">Quarta</div>
+                                    <div class="hora">18:45</div>
+                                </div>
+                                <div class="horario-item">
+                                    <div class="dia">Quinta</div>
+                                    <div class="hora">21:00</div>
+                                </div>
+                                <div class="horario-item">
+                                    <div class="dia">Sexta</div>
+                                    <div class="hora">20:15</div>
+                                </div>
+                                <div class="horario-item">
+                                    <div class="dia">Sábado</div>
+                                    <div class="hora">11:00</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- hashtags sugeridas -->
+                        <div class="insight-card">
+                            <h4>🏷️ Hashtags Sugeridas</h4>
+                            <div class="hashtags-list">
+                                <span class="hashtag-chip" onclick="mostrarToast('Hashtag copiada!', 'sucesso')">#photography</span>
+                                <span class="hashtag-chip" onclick="mostrarToast('Hashtag copiada!', 'sucesso')">#landscape</span>
+                                <span class="hashtag-chip" onclick="mostrarToast('Hashtag copiada!', 'sucesso')">#natureza</span>
+                                <span class="hashtag-chip" onclick="mostrarToast('Hashtag copiada!', 'sucesso')">#goldenhour</span>
+                                <span class="hashtag-chip" onclick="mostrarToast('Hashtag copiada!', 'sucesso')">#photooftheday</span>
+                                <span class="hashtag-chip" onclick="mostrarToast('Hashtag copiada!', 'sucesso')">#sunset</span>
+                                <span class="hashtag-chip" onclick="mostrarToast('Hashtag copiada!', 'sucesso')">#wanderlust</span>
+                                <span class="hashtag-chip" onclick="mostrarToast('Hashtag copiada!', 'sucesso')">#explore</span>
+                                <span class="hashtag-chip" onclick="mostrarToast('Hashtag copiada!', 'sucesso')">#mountains</span>
+                            </div>
+                        </div>
+
+                        <!-- dicas de conteudo -->
+                        <div class="insight-card">
+                            <h4>💡 Dicas de Conteúdo</h4>
+                            <div class="insight-item">
+                                <span class="ins-dot" style="background: #8b5cf6;"></span>
+                                <span>Poste ao menos <strong style="color: #e2e8f0;">3 vezes por semana</strong> para manter o engajamento crescendo.</span>
+                            </div>
+                            <div class="insight-item">
+                                <span class="ins-dot" style="background: #06b6d4;"></span>
+                                <span>Adicione <strong style="color: #e2e8f0;">legendas descritivas</strong> — posts com legendas longas têm 15% mais salvamentos.</span>
+                            </div>
+                            <div class="insight-item">
+                                <span class="ins-dot" style="background: #10b981;"></span>
+                                <span>Use o recurso de <strong style="color: #e2e8f0;">Stories</strong> para compartilhar bastidores das suas fotos.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- fim conteudo-app -->
+    </main>
+</div><!-- fim layout-split -->
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- MODAL DE COMPARTILHAMENTO -->
+<div class="modal-overlay" id="modalCompartilhar">
+    <div class="modal-conteudo">
+        <div class="modal-icon">🚀</div>
+        <h3>Compartilhando...</h3>
+        <p id="modalTexto">Preparando seus conteúdos para envio</p>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <button class="btn-modal" id="btnFecharModal" onclick="fecharModal()" style="display: none;">Concluído ✓</button>
+    </div>
+</div>
+
+
+<!-- ============================================
+     JAVASCRIPT - Toda a lógica do protótipo
+     ============================================ -->
+<script>
+// =============================================
+// Dados dos módulos para o painel esquerdo
+// Informacoes que mudam conforme o tab ativo
+// =============================================
+
+const dadosModulos = [
+    {
+        tag: '📷 Módulo 1',
+        titulo: 'Captura <span class="destaque">Inteligente</span>',
+        descricao: 'Sistema de captura com assistência de IA em tempo real. O visor inteligente analisa a cena e sugere os melhores ajustes automaticamente.',
+        features: [
+            { icone: '📐', texto: 'Grade de regra dos terços com indicador de nível para composição perfeita' },
+            { icone: '🤖', texto: 'Assistente IA que detecta cenas e sugere configurações de câmera ideais' },
+            { icone: '📊', texto: 'Indicadores de qualidade em tempo real — luz, composição, foco e cores' },
+            { icone: '⚡', texto: 'Controles profissionais com ISO, balanço de branco, EV e modos de foco' }
+        ]
+    },
+    {
+        tag: '🖼️ Módulo 2',
+        titulo: 'Galeria <span class="destaque">Inteligente</span>',
+        descricao: 'Galeria organizada com IA que categoriza, sugere álbuns automáticos e detecta duplicatas para otimizar seu armazenamento.',
+        features: [
+            { icone: '🗂️', texto: 'Organização automática por tipo, local e data com filtros instantâneos' },
+            { icone: '✨', texto: 'Sugestões inteligentes para criar álbuns, remover duplicatas e melhorar fotos' },
+            { icone: '🏷️', texto: 'Sistema de tags automáticas com reconhecimento de cena por IA' },
+            { icone: '⚡', texto: 'Cache inteligente com carregamento 80% mais rápido que apps tradicionais' }
+        ]
+    },
+    {
+        tag: '✨ Módulo 3',
+        titulo: 'Editor <span class="destaque">Assistido</span>',
+        descricao: 'Editor profissional com ajustes em tempo real. Sliders de exposição, contraste, saturação e mais, com visualização de curva de tons.',
+        features: [
+            { icone: '🎛️', texto: '9 ajustes precisos: exposição, contraste, realces, sombras, saturação e mais' },
+            { icone: '📈', texto: 'Curva de Tons interativa para controle fino de luzes e sombras' },
+            { icone: '🎨', texto: '8 ferramentas profissionais incluindo HSL, vinheta e granulação' },
+            { icone: '👁️', texto: 'Preview em tempo real com filtros CSS aplicados instantaneamente' }
+        ]
+    },
+    {
+        tag: '🔗 Módulo 4',
+        titulo: 'Compartilhamento <span class="destaque">Otimizado</span>',
+        descricao: 'Publique em múltiplas plataformas simultaneamente com pré-visualização, ajustes de qualidade e opções de privacidade.',
+        features: [
+            { icone: '✅', texto: 'Seleção múltipla com pré-visualização em carrossel antes de publicar' },
+            { icone: '📱', texto: '9 plataformas suportadas: Instagram, Facebook, TikTok, YouTube e mais' },
+            { icone: '🔒', texto: 'Controles de privacidade: localização, comentários e marca d\'água' },
+            { icone: '🔗', texto: 'Geração de link compartilhável com detalhes de qualidade e formato' }
+        ]
+    },
+    {
+        tag: '📊 Módulo 5',
+        titulo: 'Analytics com <span class="destaque">Insights de IA</span>',
+        descricao: 'Painel completo de analytics com métricas de desempenho, insights gerados por IA e recomendações personalizadas.',
+        features: [
+            { icone: '📈', texto: 'Gráficos de performance semanal com visualização por período (7D, 30D, 90D)' },
+            { icone: '🧠', texto: 'Insights da IA sobre engajamento, formatos ideais e tendências do público' },
+            { icone: '⏰', texto: 'Análise de melhores horários para publicação em cada dia da semana' },
+            { icone: '🏷️', texto: 'Sugestão inteligente de hashtags e dicas de conteúdo baseadas em dados' }
+        ]
+    }
+];
+
+// indice do modulo atualmente ativo
+let moduloAtual = 0;
+let zoomAtual = 100;
+let modoCaptura = 'foto'; // foto ou video
+let gravando = false;
+
+// imagens do carousel de compartilhamento
+const imagensCarousel = [
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',
+    'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80',
+    'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80'
+];
+let carouselIndex = 0;
+
+// =============================================
+// Funcao principal - Trocar entre módulos
+// =============================================
+function trocarModulo(indice) {
+    moduloAtual = indice;
+
+    // atualizar tabs da nav
+    document.querySelectorAll('.nav-tab').forEach((tab, i) => {
+        tab.classList.toggle('ativo', i === indice);
+    });
+
+    // mostrar/esconder conteudo do modulo
+    document.querySelectorAll('.modulo-conteudo').forEach((mod, i) => {
+        mod.classList.toggle('visivel', i === indice);
+    });
+
+    // atualizar painel esquerdo
+    atualizarPainelEsquerdo(indice);
+
+    // fechar sugestoes se nao for galeria
+    if (indice !== 1) {
+        const sugestoes = document.getElementById('painelSugestoes');
+        if (sugestoes) sugestoes.classList.remove('sugestoes-visivel');
+    } else {
+        // mostrar sugestoes na galeria
+        const sugestoes = document.getElementById('painelSugestoes');
+        if (sugestoes) sugestoes.classList.add('sugestoes-visivel');
+    }
+}
+
+// =============================================
+// Atualizar conteúdo do painel esquerdo
+// =============================================
+function atualizarPainelEsquerdo(indice) {
+    const dados = dadosModulos[indice];
+    const container = document.getElementById('conteudoModulo');
+
+    // montar HTML do conteudo
+    let featuresHTML = '';
+    dados.features.forEach(feat => {
+        featuresHTML += `
+            <li>
+                <span class="icone-feat">${feat.icone}</span>
+                <span>${feat.texto}</span>
+            </li>
+        `;
+    });
+
+    container.innerHTML = `
+        <div class="tag-modulo">${dados.tag}</div>
+        <h2 class="titulo-modulo">${dados.titulo}</h2>
+        <p class="descricao-modulo">${dados.descricao}</p>
+        <ul class="lista-features">
+            ${featuresHTML}
+        </ul>
+    `;
+}
+
+// =============================================
+// SISTEMA DE TOAST NOTIFICATIONS
+// =============================================
+function mostrarToast(mensagem, tipo = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+
+    // definir icone baseado no tipo
+    let icone = 'ℹ️';
+    if (tipo === 'sucesso') icone = '✅';
+    if (tipo === 'aviso') icone = '⚠️';
+
+    toast.className = `toast toast-${tipo}`;
+    toast.innerHTML = `${icone} ${mensagem}`;
+    container.appendChild(toast);
+
+    // remover depois de 3 segundos
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.remove();
+        }
+    }, 3000);
+}
+
+// =============================================
+// MÓDULO 1 - CAPTURA INTELIGENTE
+// =============================================
+
+// toggle grade
+function toggleGrade() {
+    const grade = document.getElementById('gradeTercos');
+    const btn = document.getElementById('btnGrade');
+
+    if (grade.style.display === 'none') {
+        grade.style.display = 'block';
+        btn.classList.add('ativo-btn');
+        mostrarToast('Grade ativada', 'info');
+    } else {
+        grade.style.display = 'none';
+        btn.classList.remove('ativo-btn');
+        mostrarToast('Grade desativada', 'info');
+    }
+}
+
+// toggle flash
+function toggleFlash() {
+    const btn = document.getElementById('btnFlash');
+    btn.classList.toggle('ativo-btn');
+
+    if (btn.classList.contains('ativo-btn')) {
+        mostrarToast('Flash ativado', 'info');
+    } else {
+        mostrarToast('Flash desativado', 'info');
+    }
+}
+
+// ação genérica dos botões laterais
+function acaoBtnLateral(msg) {
+    mostrarToast(msg, 'info');
+}
+
+// trocar modo foto/video
+function trocarModoCaptura(modo) {
+    modoCaptura = modo;
+    const btnFoto = document.getElementById('btnFoto');
+    const btnVideo = document.getElementById('btnVideo');
+    const obturador = document.getElementById('btnObturador');
+
+    if (modo === 'foto') {
+        btnFoto.classList.add('modo-ativo');
+        btnVideo.classList.remove('modo-ativo');
+        obturador.classList.remove('modo-video');
+        obturador.classList.remove('gravando');
+        gravando = false;
+        mostrarToast('Modo FOTO ativado', 'info');
+    } else {
+        btnVideo.classList.add('modo-ativo');
+        btnFoto.classList.remove('modo-ativo');
+        obturador.classList.add('modo-video');
+        mostrarToast('Modo VÍDEO ativado', 'info');
+    }
+}
+
+// capturar foto ou iniciar/parar video
+function capturar() {
+    if (modoCaptura === 'foto') {
+        // efeito flash
+        const visor = document.getElementById('visorCamera');
+        visor.style.transition = 'none';
+        visor.style.boxShadow = 'inset 0 0 100px rgba(255,255,255,0.8)';
+        setTimeout(() => {
+            visor.style.transition = 'box-shadow 0.3s';
+            visor.style.boxShadow = 'none';
+        }, 150);
+        mostrarToast('📸 Foto capturada com sucesso!', 'sucesso');
+    } else {
+        // toggle gravacao
+        const obturador = document.getElementById('btnObturador');
+        gravando = !gravando;
+
+        if (gravando) {
+            obturador.classList.add('gravando');
+            mostrarToast('🔴 Gravação iniciada', 'aviso');
+        } else {
+            obturador.classList.remove('gravando');
+            mostrarToast('⏹️ Gravação finalizada — 00:32', 'sucesso');
+        }
+    }
+}
+
+// =============================================
+// MÓDULO 2 - GALERIA INTELIGENTE
+// =============================================
+
+function filtrarGaleria(btnEl, filtro) {
+    // atualizar botão ativo
+    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('filtro-ativo'));
+    btnEl.classList.add('filtro-ativo');
+
+    // filtrar fotos
+    const fotos = document.querySelectorAll('.foto-item');
+    fotos.forEach(foto => {
+        if (filtro === 'todos' || filtro === 'recentes' || filtro === 'locais') {
+            foto.style.display = 'block';
+        } else {
+            const tipo = foto.getAttribute('data-tipo');
+            foto.style.display = (tipo === filtro) ? 'block' : 'none';
+        }
+    });
+
+    mostrarToast(`Filtro aplicado: ${filtro}`, 'info');
+}
+
+function abrirFotoGaleria(el) {
+    // abre no editor (simula)
+    mostrarToast('Foto selecionada — Clique em Editor para editar', 'info');
+}
+
+function fecharSugestoes() {
+    document.getElementById('painelSugestoes').classList.remove('sugestoes-visivel');
+}
+
+// =============================================
+// MÓDULO 3 - EDITOR ASSISTIDO
+// =============================================
+
+// selecionar ferramenta
+function selecionarFerramenta(btn) {
+    document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('tool-ativo'));
+    btn.classList.add('tool-ativo');
+    mostrarToast(`Ferramenta: ${btn.title}`, 'info');
+}
+
+// atualizar filtros CSS na imagem
+function atualizarFiltro(slider) {
+    const filtro = slider.getAttribute('data-filtro');
+    const valor = parseInt(slider.value);
+
+    // atualizar label do valor
+    const labelMap = {
+        'exposicao': 'valExposicao',
+        'contraste': 'valContraste',
+        'realces': 'valRealces',
+        'sombras': 'valSombras',
+        'brancos': 'valBrancos',
+        'pretos': 'valPretos',
+        'saturacao': 'valSaturacao',
+        'vibracao': 'valVibracao',
+        'temperatura': 'valTemperatura'
+    };
+
+    const labelEl = document.getElementById(labelMap[filtro]);
+    if (labelEl) {
+        labelEl.textContent = valor > 0 ? '+' + valor : valor;
+    }
+
+    // aplicar filtros CSS na imagem
+    aplicarFiltrosCSS();
+}
+
+function aplicarFiltrosCSS() {
+    const img = document.getElementById('imagemEditor');
+    const sliders = document.querySelectorAll('.slider-ajuste');
+
+    let vals = {};
+    sliders.forEach(s => {
+        vals[s.getAttribute('data-filtro')] = parseInt(s.value);
+    });
+
+    // calcular valores CSS filter
+    // brightness: exposicao + realces + brancos afetam
+    let brightness = 1 + (vals.exposicao || 0) / 100 * 0.5;
+    brightness += (vals.realces || 0) / 100 * 0.2;
+    brightness += (vals.brancos || 0) / 100 * 0.15;
+
+    // contrast
+    let contrast = 1 + (vals.contraste || 0) / 100 * 0.5;
+    contrast += (vals.pretos || 0) / 100 * 0.1;
+
+    // saturate: saturacao + vibracao
+    let saturate = 1 + (vals.saturacao || 0) / 100 * 0.8;
+    saturate += (vals.vibracao || 0) / 100 * 0.3;
+
+    // sombras afetam brightness levemente
+    brightness += (vals.sombras || 0) / 100 * 0.15;
+
+    // temperatura afeta hue-rotate e sepia
+    let hueRotate = (vals.temperatura || 0) * 0.3;
+    let sepia = Math.max(0, (vals.temperatura || 0) / 100 * 0.3);
+
+    // montar filter string
+    let filterStr = `brightness(${brightness.toFixed(2)}) contrast(${contrast.toFixed(2)}) saturate(${saturate.toFixed(2)})`;
+
+    if (hueRotate !== 0) {
+        filterStr += ` hue-rotate(${hueRotate.toFixed(1)}deg)`;
+    }
+    if (sepia > 0) {
+        filterStr += ` sepia(${sepia.toFixed(2)})`;
+    }
+
+    img.style.filter = filterStr;
+}
+
+// redefinir todos os ajustes
+function redefinirEditor() {
+    document.querySelectorAll('.slider-ajuste').forEach(slider => {
+        slider.value = 0;
+        const filtro = slider.getAttribute('data-filtro');
+        const labelMap = {
+            'exposicao': 'valExposicao', 'contraste': 'valContraste',
+            'realces': 'valRealces', 'sombras': 'valSombras',
+            'brancos': 'valBrancos', 'pretos': 'valPretos',
+            'saturacao': 'valSaturacao', 'vibracao': 'valVibracao',
+            'temperatura': 'valTemperatura'
+        };
+        const el = document.getElementById(labelMap[filtro]);
+        if (el) el.textContent = '0';
+    });
+
+    document.getElementById('imagemEditor').style.filter = 'none';
+    mostrarToast('Ajustes redefinidos', 'info');
+}
+
+// salvar edicao
+function salvarEdicao() {
+    mostrarToast('💾 Edição salva com sucesso!', 'sucesso');
+}
+
+// zoom
+function alterarZoom(delta) {
+    if (delta === 0) {
+        zoomAtual = 100;
+    } else {
+        zoomAtual = Math.max(25, Math.min(300, zoomAtual + delta));
+    }
+
+    document.getElementById('zoomValor').textContent = zoomAtual + '%';
+    const img = document.getElementById('imagemEditor');
+    img.style.transform = `scale(${zoomAtual / 100})`;
+}
+
+// =============================================
+// MÓDULO 4 - COMPARTILHAMENTO OTIMIZADO
+// =============================================
+
+// toggle selecao de fotos
+function toggleSelecao(el) {
+    el.classList.toggle('selecionado');
+    atualizarContadorSelecionados();
+    atualizarCarousel();
+}
+
+function atualizarContadorSelecionados() {
+    const selecionados = document.querySelectorAll('.selecao-item.selecionado').length;
+    document.getElementById('contadorSelecionados').textContent = selecionados;
+}
+
+function atualizarCarousel() {
+    // pegar URLs das imagens selecionadas
+    const selecionados = document.querySelectorAll('.selecao-item.selecionado');
+    const urls = [];
+
+    selecionados.forEach(item => {
+        const img = item.querySelector('img');
+        if (img) {
+            // trocar tamanho da url pra maior
+            urls.push(img.src.replace('w=300', 'w=600'));
+        }
+    });
+
+    // atualizar dots
+    const dotsContainer = document.getElementById('carouselDots');
+    dotsContainer.innerHTML = '';
+
+    if (urls.length === 0) {
+        document.getElementById('carouselImg').src = '';
+        return;
+    }
+
+    // garantir que o index nao ultrapasse
+    if (carouselIndex >= urls.length) carouselIndex = 0;
+
+    urls.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === carouselIndex ? ' dot-ativo' : '');
+        dot.onclick = () => navegarCarousel(i);
+        dotsContainer.appendChild(dot);
+    });
+
+    document.getElementById('carouselImg').src = urls[carouselIndex];
+}
+
+function navegarCarousel(indice) {
+    carouselIndex = indice;
+
+    // pegar urls selecionadas
+    const selecionados = document.querySelectorAll('.selecao-item.selecionado');
+    const urls = [];
+    selecionados.forEach(item => {
+        const img = item.querySelector('img');
+        if (img) urls.push(img.src.replace('w=300', 'w=600'));
+    });
+
+    if (urls.length === 0) return;
+    if (carouselIndex >= urls.length) carouselIndex = 0;
+
+    document.getElementById('carouselImg').src = urls[carouselIndex];
+
+    // atualizar dots
+    document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+        dot.classList.toggle('dot-ativo', i === carouselIndex);
+    });
+}
+
+// toggle destino
+function toggleDestino(el) {
+    el.classList.toggle('dest-selecionado');
+}
+
+// toggle switch
+function toggleSwitch(el) {
+    el.classList.toggle('toggle-on');
+}
+
+// iniciar compartilhamento (mostra modal com progresso)
+function iniciarCompartilhamento() {
+    const selecionados = document.querySelectorAll('.selecao-item.selecionado').length;
+    const destinos = document.querySelectorAll('.destino-item.dest-selecionado').length;
+
+    if (selecionados === 0) {
+        mostrarToast('Selecione ao menos 1 conteúdo', 'aviso');
+        return;
+    }
+    if (destinos === 0) {
+        mostrarToast('Selecione ao menos 1 destino', 'aviso');
+        return;
+    }
+
+    // mostrar modal
+    const modal = document.getElementById('modalCompartilhar');
+    const progress = document.getElementById('progressFill');
+    const texto = document.getElementById('modalTexto');
+    const btnFechar = document.getElementById('btnFecharModal');
+
+    modal.classList.add('modal-visivel');
+    progress.style.width = '0%';
+    btnFechar.style.display = 'none';
+    texto.textContent = 'Preparando seus conteúdos para envio...';
+
+    // simular progresso
+    let progresso = 0;
+    const intervalo = setInterval(() => {
+        progresso += Math.random() * 15 + 5;
+        if (progresso >= 100) {
+            progresso = 100;
+            clearInterval(intervalo);
+
+            texto.textContent = `✅ ${selecionados} conteúdo(s) compartilhado(s) em ${destinos} plataforma(s)!`;
+            btnFechar.style.display = 'inline-block';
+        } else if (progresso > 60) {
+            texto.textContent = 'Otimizando imagens para cada plataforma...';
+        } else if (progresso > 30) {
+            texto.textContent = 'Enviando conteúdos...';
+        }
+
+        progress.style.width = progresso + '%';
+    }, 400);
+}
+
+function fecharModal() {
+    document.getElementById('modalCompartilhar').classList.remove('modal-visivel');
+    mostrarToast('Compartilhamento concluído!', 'sucesso');
+}
+
+// gerar link
+function gerarLink() {
+    const selecionados = document.querySelectorAll('.selecao-item.selecionado').length;
+    if (selecionados === 0) {
+        mostrarToast('Selecione ao menos 1 conteúdo', 'aviso');
+        return;
+    }
+    mostrarToast('🔗 Link gerado: jovi.app/share/x9Kf2m', 'sucesso');
+}
+
+// =============================================
+// MÓDULO 5 - ANALYTICS
+// =============================================
+
+function trocarPeriodo(btn) {
+    document.querySelectorAll('.grafico-periodo button').forEach(b => b.classList.remove('periodo-ativo'));
+    btn.classList.add('periodo-ativo');
+
+    // simular dados diferentes
+    const barras = document.querySelectorAll('.barra-fill');
+    const dados7d = [45, 68, 52, 85, 92, 78, 60];
+    const dados30d = [38, 55, 70, 45, 62, 80, 72];
+    const dados90d = [60, 75, 50, 88, 65, 70, 55];
+
+    const periodo = btn.textContent;
+    let dados;
+    if (periodo === '7D') dados = dados7d;
+    else if (periodo === '30D') dados = dados30d;
+    else dados = dados90d;
+
+    barras.forEach((barra, i) => {
+        if (dados[i]) {
+            barra.style.height = dados[i] + '%';
+        }
+    });
+
+    mostrarToast(`Período alterado para ${periodo}`, 'info');
+}
+
+// =============================================
+// INICIALIZAÇÃO
+// =============================================
+document.addEventListener('DOMContentLoaded', function() {
+    // carregar painel esquerdo com modulo 1
+    atualizarPainelEsquerdo(0);
+
+    // inicializar carousel
+    atualizarCarousel();
+
+    // pequeno delay pra mostrar toast de boas vindas
+    setTimeout(() => {
+        mostrarToast('🤖 JOVI SmartCapture carregado com sucesso!', 'sucesso');
+    }, 800);
+});
+</script>
+
+</body>
+</html>
